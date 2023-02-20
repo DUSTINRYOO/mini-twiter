@@ -10,12 +10,16 @@ async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseType>
 ) {
+  const {
+    body: { context },
+    session: { user },
+  } = req;
   const created = await client.tweet.create({
     data: {
-      context: req.body.context,
+      context,
       user: {
         connect: {
-          id: req.session.user?.id,
+          id: user?.id,
         },
       },
     },
