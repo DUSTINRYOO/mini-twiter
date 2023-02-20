@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import useTweet from "../lib/client/useTweet";
 
 import useUser from "../lib/client/useUser";
 
@@ -8,8 +9,18 @@ type createTweetForm = {
   context: string;
 };
 
+type tweetForm = {
+  id: number;
+  createdAt: string;
+  userId: number;
+  context: string;
+};
+
 const Home: NextPage = () => {
   const { user } = useUser();
+  const { data } = useTweet();
+  console.log(user);
+  console.log(data);
   const [newTweet, setNewTweet] = useState(true);
   const onValid = async (data: createTweetForm) => {
     const created = await fetch("/api/create-tweet", {
@@ -40,12 +51,14 @@ const Home: NextPage = () => {
     formState: { errors },
   } = useForm<createTweetForm>();
   const onSubmit = (data: createTweetForm) => onValid(data);
-
   return (
     <div className="flex flex-col justify-center items-center relative p-36 w-[40rem]  mx-auto bg-red-200">
       <h1 className="text-4xl font-extrabold mb-12 border-b-4 border-b-orange-300 pb-2">
-        Hello, {user?.name}!
+        Hello, {user?.name} {data?.tweets[0].context}!
       </h1>
+      {data?.tweets?.map((tweet: tweetForm) => {
+        <h1>{tweet.id}</h1>;
+      })}
       {newTweet ? (
         <form
           className="flex flex-col justify-center items-center bg-gray-100 p-8 pb-2 rounded-2xl"

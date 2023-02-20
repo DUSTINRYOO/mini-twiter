@@ -3,31 +3,18 @@ import client from "../../lib/server/client";
 import { withIronSession } from "../../lib/server/withSession";
 
 export interface ResponseType {
-  ok: boolean;
+  [key: string]: any;
 }
 
 async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseType>
 ) {
-  const {
-    body: { context },
-    session: { user },
-  } = req;
-  const created = await client.tweett.create({
-    data: {
-      context,
-      user: {
-        connect: {
-          id: user?.id,
-        },
-      },
-    },
-  });
-  if (!created) {
+  const tweets = await client.tweett.findMany();
+  if (!tweets) {
     return res.json({ ok: false });
   }
-  return res.json({ ok: true });
+  return res.json({ tweets });
 }
 
 export default withIronSession(handler);

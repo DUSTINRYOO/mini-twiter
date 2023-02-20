@@ -11,14 +11,14 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
+  id    Int      @id @default(autoincrement())
+  email String   @unique
   name  String
-  tweet Tweet[]
+  tweet Tweett[]
   fav   Fav[]
 }
 
-model Tweet {
+model Tweett {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
@@ -30,12 +30,12 @@ model Tweet {
 }
 
 model Fav {
-  id      Int   @id @default(autoincrement())
-  user    User  @relation(fields: [userId], references: [id])
-  userId  Int
-  tweet   Tweet @relation(fields: [tweetId], references: [id])
-  tweetId Int
+  id       Int    @id @default(autoincrement())
+  user     User   @relation(fields: [userId], references: [id])
+  userId   Int
+  tweett   Tweett @relation(fields: [tweettId], references: [id])
+  tweettId Int
 
-  @@index([tweetId])
+  @@index([tweettId])
   @@index([userId])
 }
