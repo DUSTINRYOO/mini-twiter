@@ -10,7 +10,15 @@ async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseType>
 ) {
-  const tweets = await client.tweett.findMany();
+  const tweets = await client.tweett.findMany({
+    include: {
+      user: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
   if (!tweets) {
     return res.json({ ok: false });
   }

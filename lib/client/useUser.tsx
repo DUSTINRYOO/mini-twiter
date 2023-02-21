@@ -6,12 +6,11 @@ export default function useUser() {
   const { data, error } = useSWR("/api/me");
   const router = useRouter();
   useEffect(() => {
-    if (data && !data.ok) {
+    if (!data && !error) return;
+    if (!data?.ok) {
       router.push("/create-account");
     }
-    if (error) {
-      router.push("/create-account");
-    }
-  }, [error]);
-  return { user: data?.user, isLoading: error };
+  }, [data, error, router]);
+
+  return { user: data?.user, isLoading: !data && !error };
 }

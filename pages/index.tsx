@@ -9,19 +9,22 @@ type createTweetForm = {
   context: string;
 };
 
+type userForm = {
+  name: string;
+};
+
 type tweetForm = {
   id: number;
   createdAt: string;
   userId: number;
   context: string;
+  user: userForm;
 };
 
 const Home: NextPage = () => {
   const { user } = useUser();
   const { data } = useTweet();
-  console.log(user);
-  console.log(data);
-  const [newTweet, setNewTweet] = useState(true);
+  const [newTweet, setNewTweet] = useState(false);
   const onValid = async (data: createTweetForm) => {
     const created = await fetch("/api/create-tweet", {
       method: "POST",
@@ -52,16 +55,31 @@ const Home: NextPage = () => {
   } = useForm<createTweetForm>();
   const onSubmit = (data: createTweetForm) => onValid(data);
   return (
-    <div className="flex flex-col justify-center items-center relative p-36 w-[40rem]  mx-auto bg-red-200">
+    <div className="flex flex-col justify-center items-center relative p-24 w-[40rem]  mx-auto">
       <h1 className="text-4xl font-extrabold mb-12 border-b-4 border-b-orange-300 pb-2">
-        Hello, {user?.name} {data?.tweets[0].context}!
+        Hello, {user?.name}!
       </h1>
-      {data?.tweets?.map((tweet: tweetForm) => {
-        <h1>{tweet.id}</h1>;
-      })}
+      <h1 className="text-2xl font-extrabold border-b-2 border-black w-full">
+        All Tweets
+      </h1>
+      {data?.tweets.map((tweet: tweetForm) => (
+        <div
+          key={tweet.id}
+          className="flex flex-col justify-between items-center text-lg font-bold w-full m-4 bg-orange-200 p-6 rounded-2xl shadow-xl"
+        >
+          <div className="flex flex-row justify-between items-center text-lg font-bold w-full mb-4">
+            <h1>{tweet.user.name}</h1>
+            <div className="flex flex-col items-center text-sm font-semibold">
+              <h1>{tweet.createdAt.slice(0, 10)}</h1>
+              <h1>{tweet.createdAt.slice(11, 19)}</h1>
+            </div>
+          </div>
+          <h1 className="text-xl font-semibold">{tweet.context}</h1>
+        </div>
+      ))}
       {newTweet ? (
         <form
-          className="flex flex-col justify-center items-center bg-gray-100 p-8 pb-2 rounded-2xl"
+          className="flex flex-col justify-center items-center bg-gray-100 p-8 pb-2 rounded-2xl absolute top-60"
           onSubmit={handleSubmit(onSubmit)}
         >
           <label
@@ -86,7 +104,7 @@ const Home: NextPage = () => {
         </form>
       ) : null}
       <button
-        className="text-xl font-extrabold  bg-orange-300 w-32 mx-auto rounded-lg mb-2 absolute right-4 top-48"
+        className="text-xl font-extrabold  bg-orange-300 w-32 mx-auto rounded-lg mb-2 absolute right-4 top-40"
         type="submit"
         onClick={() => setNewTweet((prev) => !prev)}
       >

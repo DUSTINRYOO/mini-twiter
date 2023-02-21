@@ -25,9 +25,10 @@ const logIn: NextPage = () => {
     if (!verified.ok) {
       resetField("email");
       alert("Email doesn't exist");
-    } else {
-      router.replace("/");
     }
+    console.log(verified);
+    alert("Welcome");
+    return router.replace("/");
   };
 
   const {
