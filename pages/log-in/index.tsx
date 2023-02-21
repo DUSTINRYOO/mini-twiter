@@ -26,7 +26,6 @@ const logIn: NextPage = () => {
       resetField("email");
       alert("Email doesn't exist");
     }
-    console.log(verified);
     alert("Welcome");
     return router.replace("/");
   };

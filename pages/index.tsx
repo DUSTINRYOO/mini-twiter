@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import useTweet from "../lib/client/useTweet";
@@ -63,19 +64,18 @@ const Home: NextPage = () => {
         All Tweets
       </h1>
       {data?.tweets.map((tweet: tweetForm) => (
-        <div
-          key={tweet.id}
-          className="flex flex-col justify-between items-center text-lg font-bold w-full m-4 bg-orange-200 p-6 rounded-2xl shadow-xl"
-        >
-          <div className="flex flex-row justify-between items-center text-lg font-bold w-full mb-4">
-            <h1>{tweet.user.name}</h1>
-            <div className="flex flex-col items-center text-sm font-semibold">
-              <h1>{tweet.createdAt.slice(0, 10)}</h1>
-              <h1>{tweet.createdAt.slice(11, 19)}</h1>
+        <Link key={tweet.id} href={`/tweet/${tweet.id}`}>
+          <a className="flex flex-col justify-between items-center text-lg font-bold w-full m-4 bg-orange-200 p-6 rounded-2xl shadow-xl">
+            <div className="flex flex-row justify-between items-center text-lg font-bold w-full mb-4">
+              <h1>{tweet.user.name}</h1>
+              <div className="flex flex-col items-center text-sm font-semibold">
+                <h1>{tweet.createdAt.slice(0, 10)}</h1>
+                <h1>{tweet.createdAt.slice(11, 19)}</h1>
+              </div>
             </div>
-          </div>
-          <h1 className="text-xl font-semibold">{tweet.context}</h1>
-        </div>
+            <h1 className="text-xl font-semibold">{tweet.context}</h1>
+          </a>
+        </Link>
       ))}
       {newTweet ? (
         <form

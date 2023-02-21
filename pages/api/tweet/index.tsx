@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import client from "../../lib/server/client";
-import { withIronSession } from "../../lib/server/withSession";
+import client from "../../../lib/server/client";
+import { withIronSession } from "../../../lib/server/withSession";
 
 export interface ResponseType {
   [key: string]: any;
