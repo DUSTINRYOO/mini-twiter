@@ -65,7 +65,7 @@ const Home: NextPage = () => {
       </h1>
       {data?.tweets.map((tweet: tweetForm) => (
         <Link key={tweet.id} href={`/tweet/${tweet.id}`}>
-          <a className="flex flex-col justify-between items-center text-lg font-bold w-full m-4 bg-orange-200 p-6 rounded-2xl shadow-xl">
+          <a className="flex flex-col-reverse justify-between items-center text-lg font-bold w-full m-4 bg-orange-200 p-6 rounded-2xl shadow-xl">
             <div className="flex flex-row justify-between items-center text-lg font-bold w-full mb-4">
               <h1>{tweet.user.name}</h1>
               <div className="flex flex-col items-center text-sm font-semibold">

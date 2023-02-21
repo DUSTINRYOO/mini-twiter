@@ -22,6 +22,7 @@ async function handler(
   if (!tweets) {
     return res.json({ ok: false });
   }
+  console.log(req.body);
   return res.json({ tweets });
 }
 
