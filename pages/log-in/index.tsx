@@ -26,8 +26,7 @@ const logIn: NextPage = () => {
       resetField("email");
       alert("Email doesn't exist");
     }
-    alert("Welcome");
-    return router.replace("/");
+    return router.push("/");
   };
 
   const {
@@ -36,7 +35,6 @@ const logIn: NextPage = () => {
     resetField,
     formState: { errors },
   } = useForm<loginForm>();
-
   const onSubmit = (data: loginForm) => onValid(data);
 
   return (

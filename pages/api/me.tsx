@@ -19,6 +19,7 @@ async function handler(
       id: req.session.user.id,
     },
   });
+
   if (!user) {
     return res.json({ ok: false });
   }

@@ -1,7 +1,8 @@
 import { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
+
 import useMutation from "../../lib/client/useMutation";
 type userForm = {
   name: string;
@@ -16,24 +17,24 @@ type tweetForm = {
 };
 interface TweetDetailResponse {
   ok: boolean;
-  tweet: tweetForm;
+  tweetDetail: tweetForm;
   isLiked: boolean;
 }
 
 const TweetDetail: NextPage = () => {
   const router = useRouter();
-  const { data } = useSWR(`/api/tweet/${router.query.id}`);
 
-  const { data: favData, mutate: boundMutate } = useSWR<TweetDetailResponse>(
+  const { data, mutate: boundMutate } = useSWR<TweetDetailResponse>(
     router.query.id ? `/api/tweet/${router.query.id}` : null
   );
   const [toggleFav] = useMutation(`/api/tweet/${router.query.id}/fav`);
   const onFavClick = () => {
-    if (!favData) return;
+    if (!data) return;
     boundMutate((prev) => prev && { ...prev, isLiked: !prev.isLiked }, false);
     toggleFav({});
   };
   const isLiked = data?.isLiked;
+
   return (
     <div className="flex flex-col justify-center items-center relative p-24 w-[40rem]  mx-auto">
       <h1 className="text-4xl font-extrabold mb-12 border-b-4 border-b-orange-300 pb-2">
@@ -45,7 +46,7 @@ const TweetDetail: NextPage = () => {
         </a>
       </Link>
       <div
-        key={data?.tweetDetail.id}
+        key={data?.tweetDetail!.id}
         className="flex flex-col justify-between items-center text-lg font-bold w-full m-4 bg-orange-200 p-6 rounded-2xl shadow-xl h-96"
       >
         <div className="flex flex-col items-center justify-start h-full w-full">
@@ -81,7 +82,7 @@ const TweetDetail: NextPage = () => {
             </svg>
           ) : (
             <svg
-              className="h-6 w-6 "
+              className="h-12 w-12 "
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"

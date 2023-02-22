@@ -1,5 +1,4 @@
 import { NextPage } from "next";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 
@@ -76,11 +75,13 @@ const createAccount: NextPage = () => {
           type="submit"
           value="Create"
         />
-        <Link legacyBehavior href="/log-in">
-          <a className="text-xl font-extrabold  mt-4 mx-auto  text-center border-b-2 ">
-            Already have an account!
-          </a>
-        </Link>
+
+        <a
+          href="/log-in"
+          className="text-xl font-extrabold  mt-4 mx-auto  text-center border-b-2 "
+        >
+          Already have an account!
+        </a>
       </form>
     </div>
   );

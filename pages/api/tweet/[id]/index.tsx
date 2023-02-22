@@ -14,36 +14,33 @@ async function handler(
     query: { id },
     session: { user },
   } = req;
-  if (req.query.id) {
-    const tweetDetail = await client.tweett.findUnique({
-      where: {
-        id: +id,
-      },
-      include: {
-        user: {
-          select: {
-            name: true,
-          },
-        },
-      },
-    });
-    if (!tweetDetail) {
-      return res.json({ ok: false });
-    }
-    const isLiked = Boolean(
-      await client.fav.findFirst({
-        where: {
-          tweettId: tweetDetail?.id,
-          userId: user?.id,
-        },
+  const tweetDetail = await client.tweett.findUnique({
+    where: {
+      id: +id.toString(),
+    },
+    include: {
+      user: {
         select: {
-          id: true,
+          name: true,
         },
-      })
-    );
-    return res.json({ tweetDetail, isLiked });
+      },
+    },
+  });
+  if (!tweetDetail) {
+    return res.json({ ok: false });
   }
-  return;
+  const isLiked = Boolean(
+    await client.fav.findFirst({
+      where: {
+        tweettId: tweetDetail?.id,
+        userId: user?.id,
+      },
+      select: {
+        id: true,
+      },
+    })
+  );
+  return res.json({ tweetDetail, isLiked });
 }
 
 export default withIronSession(handler);

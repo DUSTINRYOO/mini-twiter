@@ -1,10 +1,11 @@
+import { User } from "@prisma/client";
 import { NextPage } from "next";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import useSWR from "swr";
 import useTweet from "../lib/client/useTweet";
-
-import useUser from "../lib/client/useUser";
 
 type createTweetForm = {
   context: string;
@@ -21,9 +22,20 @@ type tweetForm = {
   context: string;
   user: userForm;
 };
-
+interface UserResponse {
+  ok: boolean;
+  user: User;
+}
 const Home: NextPage = () => {
-  const { user } = useUser();
+  const router = useRouter();
+  const { data: userData, error } = useSWR<UserResponse>("/api/me");
+
+  useEffect(() => {
+    if (!userData && !error) return;
+    if (!userData?.ok) {
+      router.push("/create-account");
+    }
+  }, [userData, error]);
   const { data } = useTweet();
   const [newTweet, setNewTweet] = useState(false);
   const onValid = async (data: createTweetForm) => {
@@ -58,25 +70,27 @@ const Home: NextPage = () => {
   return (
     <div className="flex flex-col justify-center items-center relative p-24 w-[40rem]  mx-auto">
       <h1 className="text-4xl font-extrabold mb-12 border-b-4 border-b-orange-300 pb-2">
-        Hello, {user?.name}!
+        Hello, {userData?.user?.name}!
       </h1>
       <h1 className="text-2xl font-extrabold border-b-2 border-black w-full">
         All Tweets
       </h1>
-      {data?.tweets.map((tweet: tweetForm) => (
-        <Link key={tweet.id} href={`/tweet/${tweet.id}`}>
-          <a className="flex flex-col-reverse justify-between items-center text-lg font-bold w-full m-4 bg-orange-200 p-6 rounded-2xl shadow-xl">
-            <div className="flex flex-row justify-between items-center text-lg font-bold w-full mb-4">
-              <h1>{tweet.user.name}</h1>
-              <div className="flex flex-col items-center text-sm font-semibold">
-                <h1>{tweet.createdAt.slice(0, 10)}</h1>
-                <h1>{tweet.createdAt.slice(11, 19)}</h1>
+      <div className="flex flex-col-reverse">
+        {data?.tweets.map((tweet: tweetForm) => (
+          <Link key={tweet.id} href={`/tweet/${tweet.id}`}>
+            <a className="flex flex-col justify-between items-center text-lg font-bold w-full m-4 bg-orange-200 p-6 rounded-2xl shadow-xl">
+              <div className="flex flex-row justify-between items-center text-lg font-bold w-full mb-4">
+                <h1>{tweet.user.name}</h1>
+                <div className="flex flex-col items-center text-sm font-semibold">
+                  <h1>{tweet.createdAt.slice(0, 10)}</h1>
+                  <h1>{tweet.createdAt.slice(11, 19)}</h1>
+                </div>
               </div>
-            </div>
-            <h1 className="text-xl font-semibold">{tweet.context}</h1>
-          </a>
-        </Link>
-      ))}
+              <h1 className="text-xl font-semibold">{tweet.context}</h1>
+            </a>
+          </Link>
+        ))}
+      </div>
       {newTweet ? (
         <form
           className="flex flex-col justify-center items-center bg-gray-100 p-8 pb-2 rounded-2xl absolute top-60"
